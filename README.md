@@ -1,11 +1,12 @@
 # Removing Multiple Hybrid Adverse Weather in Video via a Unified Model (in submission)
 
+ :heart_eyes: :heart_eyes: Our proposed UniWRV achieves excellent performance on unified weather video restoration:heart_eyes: :heart_eyes: 
+<p align="center">
+    <img width=40% src="figures/test.gif"/>
+    <img width=40% src="figures/test1.gif"/>
 
-
-> **Abstract:** *Videos captured under real-world adverse weather conditions 
-typically suffer from uncertain hybrid weather efforts. However, existing algorithms can only remove one type of weather degradation at a time and deal with different weather conditions with separate models, thus may fail to handle real-world stochastic hybrid scenarios. Besides, the model training is also infeasible due to the lack of paired video data to characterize the coexistence of multiple weather. In this paper, we have advanced the forementioned limitations from two aspects: model and data. First, we propose a novel unified model, dubbed UniWRV, to remove multiple hybrid adverse weather from video in an all-in-one fashion. Specifically, UniWRV queries scenario-specific weather priors for given instances to adaptively characterizes the intra-frame (spatial) features with weather-heterogeneous degradation morphology and dynamically selects customized aggregation path to adaptively fuse inter-frame (temporal) features with weather-heterogeneous frame-to-frame change patterns. The proposed UniWRV can sufficiently explore the joint sharing mechanism and differential expression mechanism of different weather video features, and adaptively remove uncertain weather degradations with a single model instance.
-Second, we construct a new synthetic video dataset, termed HWVideo, for learning and benchmarking multiple hybrid adverse weather removal. HWVideo contains 15 weather conditions composed of an arbitrary combination of four common weather, with a total of 1500 adverse-weather/clean paired video clips. Comprehensive experiments demonstrate that our UniWRV can achieve promising results
-on unified multiple hybrid adverse weather removal from video.* 
+> **Abstract:** *Videos captured under real-world adverse weather conditions typically suffer from uncertain hybrid weather artifacts with heterogeneous degradation distributions. However, existing algorithms only excel at specific single degradation distributions due to limited adaption capacity and have to deal with different weather degradations with separately trained models, thus may fail to handle real-world stochastic weather scenarios. To ameliorate the aforementioned issue, we propose a novel unified model, dubbed UniWRV, to remove multiple heterogeneous video weather degradations in an all-in-one fashion. Specifically, to tackle degenerate spatial feature heterogeneity, we propose a tailored weather prior guided module that queries exclusive priors for different instances as prompts to steer spatial feature characterization. To tackle degenerate temporal feature heterogeneity, we propose a dynamic routing aggregation module that can automatically select optimal fusion paths for different instances to dynamically integrate temporal features. 
+Additionally, we managed to construct a new synthetic video dataset, termed HWVideo, for learning and benchmarking multiple hybrid adverse weather removal, which contains 15 hybrid weather conditions with a total of 1500 adverse-weather/clean paired video clips. Real-world hybrid weather videos are also collected for evaluating model generalizability. Comprehensive experiments demonstrate that our UniWRV exhibits robust and superior adaptation capability in multiple heterogeneous degradations learning scenarios, including various generic video restoration tasks beyond weather removal.* 
 
 ## Framework Architecture
 <table>
@@ -16,9 +17,6 @@ on unified multiple hybrid adverse weather removal from video.*
     <td><p align="center"><b>Overall Framework of UniWRV</b></p></td>
   </tr>
 </table>
-
-
-
 
 
 ## `Installation`

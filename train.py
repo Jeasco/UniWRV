@@ -15,10 +15,9 @@ from shutil import copyfile
 from data_util import custom_to_pil, save_image
 from vqgan_util import load_config, load_vqgan, vqgan_encoder
 from dataset import TrainDataset
-from model.restoration_network import RAHC
-from model.discriminitor import NetD
+from model.restoration_network import UniWRV
+
 from omegaconf import OmegaConf
-from taming.models.vqgan import VQModel, GumbelVQ
 from loss import L1Loss, BCELoss, SSIMLoss, CharbonnierLoss, EdgeLoss, PSNRLoss, ContrastLoss, CosLoss
 
 
@@ -33,8 +32,8 @@ setup_seed(2023)
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--train-dataset', type=str, default='./datasets/HAC/train', help='dataset folder for train (change for different datasets)')
-parser.add_argument('--val-dataset', type=str, default='./datasets/HAC/test', help='dataset forder for val')
+parser.add_argument('--train-dataset', type=str, default='./datasets/HWVideo/train', help='dataset folder for train (change for different datasets)')
+parser.add_argument('--val-dataset', type=str, default='./datasets/HWVideo/test', help='dataset forder for val')
 parser.add_argument('--save-epoch-freq', type=int, default=5 , help='how often to save model')
 parser.add_argument('--print-freq', type=int, default=20, help='how often to print training information')
 parser.add_argument('--val', type=bool, default=False, help='val during training or not')
@@ -57,45 +56,17 @@ def build_model(opt):
     if torch.cuda.device_count() > 1:
         print("\n\nLet's use", torch.cuda.device_count(), "GPUs!\n\n")
 
-    config_vqgan = load_config("logs/vqgan_gumbel_f8/configs/model.yaml", display=False)
-    vqgan, vqgan_dict = load_vqgan(config_vqgan, ckpt_path="logs/vqgan_gumbel_f8/checkpoints/last.ckpt", is_gumbel=True)
-    vqgan = vqgan.cuda()
 
-    discriminitor = NetD().cuda()
-
-    model = RAHC().cuda()
-
-    pretrained_dict = {k[9:]: v for k, v in vqgan_dict.items() if 'quantize' in k}
-    model.mapping_network.quantize.load_state_dict(pretrained_dict, strict=False)
-
-    for param in model.mapping_network.quantize.parameters():
-        param.requires_grad = False
-        param.retain_graph = True
+    model = UniWRV().cuda()
 
 
-    optimizer_rest = torch.optim.Adam(list(model.encoders.parameters())+
-                                  list(model.decoders.parameters())+
-                                  list(model.intro.parameters())+
-                                  list(model.ending.parameters())+
-                                  list(model.middle_pre.parameters())+
-                                  list(model.middle_aft.parameters())+
-                                  list(model.ups.parameters())+
-                                  list(model.downs.parameters())+
-                                  list(model.post_conv.parameters()),
+
+    optimizer_rest = torch.optim.Adam(model.parameters(),
                                 lr=opt.lr,
                                  betas=(0.9, 0.999),eps=1e-8)
 
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer_rest, opt.epochs,
                                                             eta_min=1e-6)
-
-    optimizer_map = torch.optim.Adam(list(model.mapping_network.conv.parameters())+
-                                     list(model.mapping_network.att.parameters()),
-                                      lr=opt.lr,
-                                      betas=(0.9, 0.999), eps=1e-8)
-
-    optimizer_dis = torch.optim.Adam(discriminitor.parameters(),
-                                     lr=opt.lr,
-                                     betas=(0.9, 0.999), eps=1e-8)
 
 
     if len(device_ids) > 1:
@@ -155,34 +126,14 @@ def train(epoch, model, vqgan, discriminitor, train_loader, optimizer_rest, opti
     for batch_iter, data in enumerate(train_loader):
         image, target, label = data['in_img'].cuda(), data['gt_img'].cuda(), data['label'].cuda()
 
-        output, f_rv = model(image)
-# =====================discriminitor=============================
-        optimizer_dis.zero_grad()
-
-        dis_out_t = discriminitor(target)
-        type = torch.zeros_like(label).cuda()
-        dis_loss_t = train_loss['bce'](dis_out_t, type)
-        dis_loss_t.backward()
-
-        dis_out_d = discriminitor(output.detach())
-        dis_loss_d = train_loss['bce'](dis_out_d, label)
-        dis_loss_d.backward()
-
-        optimizer_dis.step()
-# =====================mapping network=============================
-        vqgan_results = vqgan_encoder(target, vqgan).detach()
-        optimizer_map.zero_grad()
-        map_net_loss = train_loss['cos'](f_rv, vqgan_results)
-        map_net_loss.backward()
-        optimizer_map.step()
+        output = model(image)
 
 # =====================restoration network=============================
         optimizer_rest.zero_grad()
         dis_out_o = discriminitor(output)
-        losses = train_loss['l1'](output, target) + 0.1 * train_loss['bce'](dis_out_o, type)
+        losses = train_loss['l1'](output, target)
         losses.backward()
         optimizer_rest.step()
-
 
         total_epoch_train_loss.append(losses.cpu().data)
 
