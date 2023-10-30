@@ -1,6 +1,6 @@
 # Removing Multiple Hybrid Adverse Weather in Video via a Unified Model (in submission)
 
- :heart_eyes: :heart_eyes:      Our proposed UniWRV delivers 3.91 dB PSNR performance gains ！！！     :heart_eyes: :heart_eyes: 
+ <center>:heart_eyes: :heart_eyes:      Our proposed UniWRV delivers 3.91 dB PSNR performance gains ！！！     :heart_eyes: :heart_eyes: </center>
 <p align="center">
     <img width=40% src="figures/test.gif"/>
     <img width=40% src="figures/test1.gif"/>
