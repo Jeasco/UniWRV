@@ -11,7 +11,7 @@ Additionally, we managed to construct a new synthetic video dataset, termed HWVi
 ## Framework Architecture
 <table>
   <tr>
-    <td> <img src = "figures/UniWRV.png"> </td>
+    <td> <img src = "figures/framework.png"> </td>
   </tr>
   <tr>
     <td><p align="center"><b>Overall Framework of UniWRV</b></p></td>
