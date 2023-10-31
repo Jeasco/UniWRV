@@ -1,6 +1,6 @@
 # Removing Multiple Hybrid Adverse Weather in Video via a Unified Model (in submission)
 
-:heart_eyes: :heart_eyes: :heart_eyes: :heart_eyes:  :heart_eyes: :heart_eyes:   Our proposed UniWRV delivers 3.91 dB PSNR performance gains ！！！   :heart_eyes: :heart_eyes:  :heart_eyes: :heart_eyes: :heart_eyes: :heart_eyes:
+:heart_eyes: :heart_eyes: :heart_eyes: :heart_eyes:  :heart_eyes: :heart_eyes:   Our proposed UniWRV delivers 3.31 dB PSNR performance gains ！！！   :heart_eyes: :heart_eyes:  :heart_eyes: :heart_eyes: :heart_eyes: :heart_eyes:
 <p align="center">
     <img width=40% src="figures/test.gif"/>
     <img width=40% src="figures/test1.gif"/>
@@ -37,7 +37,6 @@ pip install matplotlib scikit-image opencv-python timm einops ptflops PIL argpar
 cd dataset
 python prepare.py
 ```
--  Download the pre-trained [VQGAN] and place it in `./logs/`
 -  Train the model with default arguments by running
 
 ```
