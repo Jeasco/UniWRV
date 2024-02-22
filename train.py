@@ -18,7 +18,8 @@ from dataset import TrainDataset
 from model.restoration_network import UniWRV
 
 from omegaconf import OmegaConf
-from loss import L1Loss, BCELoss, SSIMLoss, CharbonnierLoss, EdgeLoss, PSNRLoss, ContrastLoss, CosLoss
+from loss import L_final
+L_finalL_final
 
 
 def setup_seed(seed):
@@ -72,10 +73,7 @@ def build_model(opt):
     if len(device_ids) > 1:
         model = nn.DataParallel(model, device_ids=device_ids)
 
-    l1loss = L1Loss().cuda()
-    bceloss = BCELoss().cuda()
-    cosloss = CosLoss().cuda()
-    loss = {'l1':l1loss, 'bce':bceloss, 'cos':cosloss}
+    loss = L_final
 
     return model, vqgan, discriminitor, optimizer_rest, optimizer_map, optimizer_dis, loss, scheduler
 
@@ -131,7 +129,7 @@ def train(epoch, model, vqgan, discriminitor, train_loader, optimizer_rest, opti
 # =====================restoration network=============================
         optimizer_rest.zero_grad()
         dis_out_o = discriminitor(output)
-        losses = train_loss['l1'](output, target)
+        losses = L_final(output, target)
         losses.backward()
         optimizer_rest.step()
 
