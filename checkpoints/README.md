@@ -1,1 +1,1 @@
-Coming Soon
+Available after acceptance!
