@@ -175,10 +175,10 @@ class UniWRV(nn.Module):
 
         self.outBlock = nn.Sequential(*OutBlock)
 
-        self.MSA1 = DeformableAttnBlock_FUSION(n_heads=4,d_model=256,n_levels=3,n_points=12)
-        self.MSA2 = DeformableAttnBlock_FUSION(n_heads=4, d_model=256, n_levels=3, n_points=12)
-        self.MSA3 = DeformableAttnBlock_FUSION(n_heads=4, d_model=256, n_levels=3, n_points=12)
-        self.MSA4 = DeformableAttnBlock_FUSION(n_heads=4, d_model=256, n_levels=3, n_points=12)
+        self.DRA_1 = DeformableAttnBlock_FUSION(n_heads=4, d_model=256,n_levels=3,n_points=12)
+        self.DRA_2 = DeformableAttnBlock_FUSION(n_heads=4, d_model=256, n_levels=3, n_points=12)
+        self.DRA_3 = DeformableAttnBlock_FUSION(n_heads=4, d_model=256, n_levels=3, n_points=12)
+        self.DRA_4 = DeformableAttnBlock_FUSION(n_heads=4, d_model=256, n_levels=3, n_points=12)
         
         # self.pos_em  = PositionalEncodingPermute3D(3)
         self.motion_branch = torch.nn.Sequential(
